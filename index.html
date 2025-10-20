@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Групповые туры</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 20px;
+            padding: 0;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            background: #1a3a8a;
+            color: white;
+            padding: 25px 20px 20px;
+            text-align: center;
+            position: relative;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-header h3 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .modal-tour-price {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin: 10px 0;
+        }
+
+        #modalTourDuration {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #1a3a8a;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: #1a3a8a;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #152c6d;
+        }
+
+        .booking-summary {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #1a3a8a;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .booking-detail {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .booking-detail .label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .booking-detail .value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .booking-total {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a3a8a;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .booking-success {
+            text-align: center;
+            padding: 30px 20px;
+            display: none;
+        }
+
+        .booking-success-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .booking-success h3 {
+            color: #1a3a8a;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .booking-success p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="bookingModal" class="modal" style="display: block; position: relative; background: transparent;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close">&times;</button>
+                <h3 id="modalTourName">Бронирование группового тура</h3>
+                <div class="modal-tour-price" id="modalTourPrice">89 000 ₽</div>
+                <div id="modalTourDuration">10 дней</div>
+            </div>
+            <div class="modal-body">
+                <div id="bookingForm">
+                    <form class="booking-form">
+                        <div class="form-group">
+                            <input type="text" id="bookingName" name="name" required placeholder="Ваше имя">
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="bookingPhone" name="phone" required placeholder="Ваш номер телефона">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="bookingEmail" name="email" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <select id="bookingPersons" required>
+                                <option value="1" selected>1 человек</option>
+                                <option value="2">2 человека</option>
+                                <option value="3">3 человека</option>
+                                <option value="4">4 человека</option>
+                            </select>
+                        </div>
+                        
+                        <div class="booking-summary">
+                            <div class="booking-details">
+                                <div class="booking-detail">
+                                    <div class="label">Тур</div>
+                                    <div class="value" id="summaryTour">Италия: Рим + Флоренция + Венеция</div>
+                                </div>
+                                <div class="booking-detail">
+                                    <div class="label">Количество</div>
+                                    <div class="value" id="summaryPersons">1 чел.</div>
+                                </div>
+                                <div class="booking-detail">
+                                    <div class="label">Стоимость</div>
+                                    <div class="value" id="summaryPrice">89 000 ₽</div>
+                                </div>
+                                <div class="booking-detail">
+                                    <div class="label">Продолжительность</div>
+                                    <div class="value" id="summaryDuration">10 дней</div>
+                                </div>
+                            </div>
+                            <div class="booking-total">
+                                Итого: <span id="bookingTotal">89 000 ₽</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            🎯 Забронировать тур
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="bookingSuccess" class="booking-success">
+                    <div class="booking-success-icon">🎉</div>
+                    <h3>Бронь успешно оформлена!</h3>
+                    <p>Мы свяжемся с вами в течение 30 минут для подтверждения бронирования.</p>
+                    <button class="btn-primary" onclick="resetForm()">Отлично!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTour = {
+            name: "Италия: Рим + Флоренция + Венеция",
+            price: 89000,
+            duration: "10 дней"
+        };
+
+        function updateBookingSummary() {
+            const persons = parseInt(document.getElementById('bookingPersons').value) || 1;
+            const totalPrice = currentTour.price * persons;
+            
+            document.getElementById('summaryPersons').textContent = persons + ' чел.';
+            document.getElementById('bookingTotal').textContent = totalPrice.toLocaleString('ru-RU') + ' ₽';
+        }
+
+        function resetForm() {
+            document.getElementById('bookingForm').style.display = 'block';
+            document.getElementById('bookingSuccess').style.display = 'none';
+            document.querySelector('.booking-form').reset();
+            updateBookingSummary();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.modal-close').addEventListener('click', function() {
+                alert('Закрыть модальное окно');
+            });
+            
+            document.getElementById('bookingPersons').addEventListener('change', updateBookingSummary);
+            
+            document.querySelector('.booking-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('bookingName').value;
+                const phone = document.getElementById('bookingPhone').value;
+                const email = document.getElementById('bookingEmail').value;
+                
+                if (!name || !phone || !email) {
+                    alert('Пожалуйста, заполните все обязательные поля');
+                    return;
+                }
+                
+                document.getElementById('bookingForm').style.display = 'none';
+                document.getElementById('bookingSuccess').style.display = 'block';
+                
+                console.log('Group tour booking submitted:', {
+                    tour: currentTour.name,
+                    persons: document.getElementById('bookingPersons').value,
+                    total: document.getElementById('bookingTotal').textContent,
+                    customer: { name, phone, email }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
